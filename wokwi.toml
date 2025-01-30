@@ -1,0 +1,4 @@
+[wokwi]
+version = 1
+firmware = 'build/GPIO2-T1.hex'
+elf = 'build/GPIO2-T1.elf'
