@@ -2,6 +2,7 @@
 #include "pico/stdlib.h"
 #include "hardware/clocks.h"
 #include "hardware/timer.h"
+#include "hardware/gpio.h"
 #include "pico/bootrom.h"
 
 // Biblioteca gerada pelo arquivo .pio durante a compilação.
@@ -12,6 +13,10 @@
 #define LED_PIN 7
 #define DEBOUNCE_DELAY_MS 200
 
+#define LED_R 13
+#define LED_G 11
+#define LED_B 12
+
 // prototypes
 void init_hardware(void);
 void init_leds(void);
@@ -19,6 +24,7 @@ void set_led(int index, uint8_t r, uint8_t g, uint8_t b);
 void clear_leds(void);
 void write_leds(void);
 void exibirNumero(int countBotao);
+static void gpio_irq_handler(uint gpio, uint32_t events);
 
 // global variables
 int countBotao = 0;
@@ -111,6 +117,15 @@ void init_hardware(void)
   gpio_set_dir(6, GPIO_IN); // Configura GPIO 6 como entrada
   gpio_pull_up(6);          // Ativa pull-up interno no GPIO 6
 
+  gpio_init(LED_R);             // Inicializa LED_R como saída
+  gpio_set_dir(LED_R, GPIO_OUT); // Configura LED_R como saída
+
+  gpio_init(LED_G);             // Inicializa LED_G como saída
+  gpio_set_dir(LED_G, GPIO_OUT); // Configura LED_G como saída
+
+  gpio_init(LED_B);             // Inicializa LED_B como saída
+  gpio_set_dir(LED_B, GPIO_OUT); // Configura LED_B como saída
+
   init_leds(); // Inicializa os LEDs
   clear_leds();
   write_leds();
@@ -170,19 +185,29 @@ void exibirNumero(int countBotao)
   write_leds();
 }
 
+// manipulador de interrupção para o timer
+bool repeating_timer_callback(struct repeating_timer *t) {
+    gpio_put(LED_R, !gpio_get(LED_R)); // alterna o estado do LED
+    return true; // continua executando a cada intervalo definido
+}
+
 int main()
 {
   stdio_init_all();
   init_hardware();
   exibirNumero(countBotao);
 
+  // timer que dispare a cada 100ms
+  struct repeating_timer timer;
+  add_repeating_timer_ms(-100, repeating_timer_callback, NULL, &timer);
+
   while (true)
   {
     if (!gpio_get(5)) // verifica se o botão A foi pressionado
     {
-      // Obtém o tempo atual em microssegundos
+      // obtém o tempo atual em microssegundos
       uint32_t current_time = to_us_since_boot(get_absolute_time());
-      // Verifica se passou tempo suficiente desde o último evento
+      // verifica se passou tempo suficiente desde o último evento
       if (current_time - last_time > 200000) // 200 ms de debouncing
       {
         last_time = current_time; // atualiza o tempo do último evento
@@ -197,9 +222,9 @@ int main()
 
     if (!gpio_get(6)) // verifica se o botão B foi pressionado
     {
-      // Obtém o tempo atual em microssegundos
+      // obtém o tempo atual em microssegundos
       uint32_t current_time = to_us_since_boot(get_absolute_time());
-      // Verifica se passou tempo suficiente desde o último evento
+      // verifica se passou tempo suficiente desde o último evento
       if (current_time - last_time > 200000) // 200 ms de debouncing
       {
         last_time = current_time; // atualiza o tempo do último evento
