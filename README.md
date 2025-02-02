@@ -29,7 +29,7 @@ O projeto está funcionando perfeitamente. Todas as funcionalidades foram implem
 - **Debouncing via Software**: Implementado para evitar múltiplas leituras erradas ao pressionar os botões.
 - **Controle de LEDs**: O projeto demonstra o controle de LEDs comuns e LEDs WS2812, garantindo o domínio de diferentes métodos de acionamento.
 
-## Como Compilar
+## Como Clonar
 
 1. **Clone o repositório:**
    ```bash
