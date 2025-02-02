@@ -37,3 +37,7 @@ O projeto está funcionando perfeitamente. Todas as funcionalidades foram implem
    cd BitDogLabFeatures
    ```
 
+
+## Vídeo
+
+Acesse o vídeo da solução e demonstrativo no link: [Link do vídeo](https://www.dropbox.com/scl/fi/f2o58qpx2b9uhb8b05bp9/ApresentacaoFuncionalidadesBitDogLab.mp4?rlkey=hkgvr1adujdabqqpf33fr8ae3&st=0tgli20p&dl=0).
